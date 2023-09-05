@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Namespace="ModelBD.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005">
+        <EntityContainer Name="ModelBDTargetContainer" >
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ModelBD" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="ModelBDContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="EstadoRemesa" EntityType="ModelBD.EstadoRemesa" />
+          <EntitySet Name="Envio" EntityType="ModelBD.Envio" />
+          <EntitySet Name="ClienteEmisor" EntityType="ModelBD.Clientes" />
+          <EntitySet Name="Pais" EntityType="ModelBD.Pais" />
+          <EntitySet Name="TipoDeCambio" EntityType="ModelBD.TipoDeCambio" />
+          <EntitySet Name="Moneda" EntityType="ModelBD.Moneda" />
+          <AssociationSet Name="MonedaTipoDeCambio" Association="ModelBD.MonedaTipoDeCambio">
+            <End Role="Moneda" EntitySet="Moneda" />
+            <End Role="TipoDeCambio" EntitySet="TipoDeCambio" />
+          </AssociationSet>
+          <AssociationSet Name="EnvioEstadoRemesa" Association="ModelBD.EnvioEstadoRemesa">
+            <End Role="Envio" EntitySet="Envio" />
+            <End Role="EstadoRemesa" EntitySet="EstadoRemesa" />
+          </AssociationSet>
+          <AssociationSet Name="ClientesEnvio" Association="ModelBD.ClientesEnvio">
+            <End Role="Clientes" EntitySet="ClienteEmisor" />
+            <End Role="Envio" EntitySet="Envio" />
+          </AssociationSet>
+          <AssociationSet Name="ClientesPais" Association="ModelBD.ClientesPais">
+            <End Role="Clientes" EntitySet="ClienteEmisor" />
+            <End Role="Pais" EntitySet="Pais" />
+          </AssociationSet>
+          <AssociationSet Name="TipoDeCambioEnvio" Association="ModelBD.TipoDeCambioEnvio">
+            <End Role="TipoDeCambio" EntitySet="TipoDeCambio" />
+            <End Role="Envio" EntitySet="Envio" />
+          </AssociationSet>
+          <EntitySet Name="Notificaciones" EntityType="ModelBD.Notificaciones" />
+          <AssociationSet Name="NotificacionesEnvio" Association="ModelBD.NotificacionesEnvio">
+            <End Role="Notificaciones" EntitySet="Notificaciones" />
+            <End Role="Envio" EntitySet="Envio" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="EstadoRemesa">
+          <Key>
+            <PropertyRef Name="Id_Estado" />
+          </Key>
+          <Property Name="Id_Estado" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Estado" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Envio" Relationship="ModelBD.EnvioEstadoRemesa" FromRole="EstadoRemesa" ToRole="Envio" />
+          <Property Name="EnvioId_Envio" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Envio">
+          <Key>
+            <PropertyRef Name="Id_Envio" />
+          </Key>
+          <Property Name="Id_Envio" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MontoPagado" Type="Double" Nullable="false" />
+          <Property Name="FechaPago" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CodigoRetiro" Type="Int32" Nullable="false" />
+          <Property Name="TipoDeCambioId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EstadoRemesa" Relationship="ModelBD.EnvioEstadoRemesa" FromRole="Envio" ToRole="EstadoRemesa" />
+          <NavigationProperty Name="Clientes" Relationship="ModelBD.ClientesEnvio" FromRole="Envio" ToRole="Clientes" />
+          <Property Name="ClientesId_Cliente" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TipoDeCambio" Relationship="ModelBD.TipoDeCambioEnvio" FromRole="Envio" ToRole="TipoDeCambio" />
+          <Property Name="TipoDeCambioId_Cambio" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Notificaciones" Relationship="ModelBD.NotificacionesEnvio" FromRole="Envio" ToRole="Notificaciones" />
+        </EntityType>
+        <EntityType Name="Clientes">
+          <Key>
+            <PropertyRef Name="Id_Cliente" />
+          </Key>
+          <Property Name="Id_Cliente" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombresEmisor" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Apellido1Emisor" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Apellido2Emisor" Type="String" Nullable="true" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DireccionEmisor" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TelefonoEmisor" Type="Int32" Nullable="false" />
+          <Property Name="Cedula" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Envio" Relationship="ModelBD.ClientesEnvio" FromRole="Clientes" ToRole="Envio" />
+          <NavigationProperty Name="Pais" Relationship="ModelBD.ClientesPais" FromRole="Clientes" ToRole="Pais" />
+        </EntityType>
+        <EntityType Name="Pais">
+          <Key>
+            <PropertyRef Name="Id_Pais" />
+          </Key>
+          <Property Name="Id_Pais" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombrePais" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Clientes" Relationship="ModelBD.ClientesPais" FromRole="Pais" ToRole="Clientes" />
+          <Property Name="ClientesId_Cliente" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TipoDeCambio">
+          <Key>
+            <PropertyRef Name="Id_Cambio" />
+          </Key>
+          <Property Name="Id_Cambio" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CambioDia" Type="Double" Nullable="false" />
+          <Property Name="FechaTipoCambio" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MonedaId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Moneda" Relationship="ModelBD.MonedaTipoDeCambio" FromRole="TipoDeCambio" ToRole="Moneda" />
+          <NavigationProperty Name="Envio" Relationship="ModelBD.TipoDeCambioEnvio" FromRole="TipoDeCambio" ToRole="Envio" />
+        </EntityType>
+        <EntityType Name="Moneda">
+          <Key>
+            <PropertyRef Name="Id_Moneda" />
+          </Key>
+          <Property Name="Id_Moneda" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TipoMoneda" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TipoDeCambio" Relationship="ModelBD.MonedaTipoDeCambio" FromRole="Moneda" ToRole="TipoDeCambio" />
+        </EntityType>
+        <Association Name="MonedaTipoDeCambio">
+          <End Type="ModelBD.Moneda" Role="Moneda" Multiplicity="1" />
+          <End Type="ModelBD.TipoDeCambio" Role="TipoDeCambio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moneda">
+              <PropertyRef Name="Id_Moneda" />
+            </Principal>
+            <Dependent Role="TipoDeCambio">
+              <PropertyRef Name="MonedaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EnvioEstadoRemesa">
+          <End Type="ModelBD.Envio" Role="Envio" Multiplicity="1" />
+          <End Type="ModelBD.EstadoRemesa" Role="EstadoRemesa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Envio">
+              <PropertyRef Name="Id_Envio" />
+            </Principal>
+            <Dependent Role="EstadoRemesa">
+              <PropertyRef Name="EnvioId_Envio" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClientesEnvio">
+          <End Type="ModelBD.Clientes" Role="Clientes" Multiplicity="1" />
+          <End Type="ModelBD.Envio" Role="Envio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="Id_Cliente" />
+            </Principal>
+            <Dependent Role="Envio">
+              <PropertyRef Name="ClientesId_Cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClientesPais">
+          <End Type="ModelBD.Clientes" Role="Clientes" Multiplicity="1" />
+          <End Type="ModelBD.Pais" Role="Pais" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="Id_Cliente" />
+            </Principal>
+            <Dependent Role="Pais">
+              <PropertyRef Name="ClientesId_Cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TipoDeCambioEnvio">
+          <End Type="ModelBD.TipoDeCambio" Role="TipoDeCambio" Multiplicity="1" />
+          <End Type="ModelBD.Envio" Role="Envio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoDeCambio">
+              <PropertyRef Name="Id_Cambio" />
+            </Principal>
+            <Dependent Role="Envio">
+              <PropertyRef Name="TipoDeCambioId_Cambio" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Notificaciones">
+          <Key>
+            <PropertyRef Name="Id_Notificacion" />
+          </Key>
+          <Property Name="Id_Notificacion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FechaNotificacion" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Envio" Relationship="ModelBD.NotificacionesEnvio" FromRole="Notificaciones" ToRole="Envio" />
+          <Property Name="Descripcion" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="NotificacionesEnvio">
+          <End Type="ModelBD.Notificaciones" Role="Notificaciones" Multiplicity="1" />
+          <End Type="ModelBD.Envio" Role="Envio" Multiplicity="1" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
+        <Alias Key="Model" Value="ModelBD" />
+        <Alias Key="Target" Value="ModelBD.Store" />
+        <EntityContainerMapping CdmEntityContainer="ModelBDContainer" StorageEntityContainer="ModelBDTargetContainer">
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
